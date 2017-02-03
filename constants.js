@@ -1,3 +1,4 @@
+
 //------------
 //System Values
 //------------
@@ -8,7 +9,23 @@ var SCREEN_WIDTH = 400,
 
 	GAME_FONTS = "bold 20px sans-serif";
 var PATH_SPLASH = "img/splash.png"
-var PATH_CHAR = "img/spritesheet3.png";
+
+var PATH_CHAR = "img/spritesheetsi.png";
+//play button variables
+var PATH_PLAY = "img/play.png",
+    PLAY_X=133,
+    PLAY_Y=300,
+    PLAY_WIDTH=137,
+    PLAY_HEIGHT=40;
+
+//instruction screen variables
+var PATH_INSTR="img/instructions.png";
+//continue sprite variables, for blinking continue button
+var CONT_WIDTH = 30,
+    CONT_HEIGHT = 18,
+    CONT_START_X = 0,
+    CONT_START_Y = 30,
+    PATH_CONT="img/continuesprite.png";
 
 var CHAR_WIDTH = 72,
 	CHAR_HEIGHT = 96,
