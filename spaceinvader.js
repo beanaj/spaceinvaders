@@ -2,6 +2,17 @@ var gameScreen = document.getElementById("game");
 gameScreen.width=SCREEN_WIDTH;
 gameScreen.height=SCREEN_HEIGHT;
 var ctx = gameScreen.getContext("2d");
+//loading screen for images etc.
+
+ctx.beginPath();
+ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+ctx.fillStyle="#000000";
+ctx.fill();
+
+ctx.font = "30px Lucida Console";
+ctx.fillStyle = "white";
+ctx.textAlign = "center";
+ctx.fillText("loading!",150,200);
 
 //splash screen and instruction screen variables
 var splash = new Image();
@@ -12,6 +23,14 @@ splash.src = PATH_SPLASH;
 play.src = PATH_PLAY;
 instruction.src = PATH_INSTR;
 cont.src = PATH_CONT;
+cont.onload = setReady;
+
+
+function setReady(){
+    this.ready=true;
+}
+
+
 
 splash.onload = function(){
     ctx.beginPath();
@@ -29,20 +48,30 @@ splash.onload = function(){
 play.onload = function(){
     ctx.drawImage(play, PLAY_X, PLAY_Y);
     gameScreen.addEventListener("click", playGameButton);
-
 }
 
 
 //variables for draw instruction animations
 var currentX= CONT_START_X;
 var currentY= CONT_START_Y;
+
 function drawInstruction(){
+    setTimeout(function(){
     requestAnimationFrame(drawInstruction);
-    alert("Hello! I am an alert box!!");
-    ctx.drawImage(cont,
-                    currentX, currentY,
-                    CONT_WIDTH, CONT_HEIGHT,
-                    350,350);
+    }, 1000/ 2);
+    ctx.beginPath();
+    ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+    ctx.fillStyle="#000000";
+    ctx.fill();
+    //draw instructions
+    ctx.drawImage(instruction, 0, 0);
+    ctx.drawImage(cont, currentX, currentY, CONT_WIDTH, CONT_HEIGHT, 350, 370, CONT_WIDTH, CONT_HEIGHT);
+
+    currentY+=CONT_HEIGHT;
+    if(currentY>=CONT_MAX_Y){
+        currentY=0;
+    }
+
 }
 
 
@@ -54,19 +83,8 @@ function playGameButton(evt){
        evt.pageX < widthRange &&
        evt.pageY >PLAY_Y &&
        evt.pageY < heightRange){
-        ctx.beginPath();
-        ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-        ctx.fillStyle="#000000";
-        ctx.fill();
-        //draw instructions
-        ctx.drawImage(instruction, 0, 0);
-        gameScreen.addEventListener("click", continueButton);
-        drawInstruction;
+            drawInstruction();
     }
-}
-
-function continueButton(evt){
-
 }
 
 

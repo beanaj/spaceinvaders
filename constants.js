@@ -24,7 +24,8 @@ var PATH_INSTR="img/instructions.png";
 var CONT_WIDTH = 30,
     CONT_HEIGHT = 18,
     CONT_START_X = 0,
-    CONT_START_Y = 30,
+    CONT_START_Y = 0,
+    CONT_MAX_Y = 36,
     PATH_CONT="img/continuesprite.png";
 
 var CHAR_WIDTH = 72,
