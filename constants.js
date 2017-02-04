@@ -26,8 +26,13 @@ var CONT_WIDTH = 30,
     CONT_START_X = 0,
     CONT_START_Y = 0,
     CONT_MAX_Y = 36,
+    CONT_X = 350,
+    CONT_Y = 370;
     PATH_CONT="img/continuesprite.png";
-
+//game backround variables
+var PATH_GB="img/gamebackround.png";
+//game over variables
+var PATH_GAMEOVER = "img/gameover.png";
 var CHAR_WIDTH = 72,
 	CHAR_HEIGHT = 96,
 	IMAGE_START_X = 0,
