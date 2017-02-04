@@ -7,6 +7,7 @@ var score=0000
 var highScore= 0000;
 var lifes=6;
 var playGame=false;
+var gameOver=false;
 //main game images
 var gb = new Image();
 gb.src = PATH_GB;
@@ -91,6 +92,13 @@ function draw(){
         if(currentY>=CONT_MAX_Y){
             currentY=0;
         }
+    }else if(gameOver==true){
+        ctx.drawImage(gover, 0, 0);
+        setTimeout(function(){playGame=false;
+                              gameOver=false;
+                              lifes=6;
+                             },5000);
+
     }else{
         ctx.drawImage(gb, 0, 0);
         //adding all text, high schor, score, lives and credits
@@ -134,10 +142,12 @@ function draw(){
             lifey+=LIVES_HEIGHT;
             break;
         }
-        lifes--;
+
         ctx.drawImage(lifeImage, lifex, lifey, LIVES_WIDTH, LIVES_HEIGHT, LIVES_X, LIVES_Y, LIVES_WIDTH, LIVES_HEIGHT);
-
-
+        if(lifes==0){
+            gameOver=true;
+        }
+lifes--;
     }
 
 
