@@ -18,9 +18,9 @@ var PATH_PLAY = "img/play.png",
     PLAY_WIDTH=137,
     PLAY_HEIGHT=40;
 
-//instruction screen variables
+//instruction screen variables---------------------------------------------------
 var PATH_INSTR="img/instructions.png";
-//continue sprite variables, for blinking continue button
+//continue sprite variables, for blinking continue button------------------------
 var CONT_WIDTH = 30,
     CONT_HEIGHT = 18,
     CONT_START_X = 0,
@@ -31,19 +31,17 @@ var CONT_WIDTH = 30,
     PATH_CONT="img/continuesprite.png";
 //game backround variables
 var PATH_GB="img/gamebackround.png";
-//game over variables
+//game lives variables-----------------------------------------------------------
+var PATH_LIVES="img/lives.png";
+var LIVES_WIDTH = 131,
+    LIVES_HEIGHT = 20,
+    LIVES_START_X = 0,
+    LIVES_START_Y = 0,
+    LIVES_MAX_Y = 100,
+    LIVES_X = 30,
+    LIVES_Y = 375;
+//game over variables-----------------------------------------------------------
 var PATH_GAMEOVER = "img/gameover.png";
-var CHAR_WIDTH = 72,
-	CHAR_HEIGHT = 96,
-	IMAGE_START_X = 0,
-	IMAGE_START_Y = 96,
-	//IMAGE_START_Y = 0, // 96 2nd row
-
-	SPRITE_WIDTH = 216;
-
-var TEXT_PRELOADING = "Loading ...",
-	TEXT_PRELOADING_X = 200,
-	TEXT_PRELOADING_Y = 200;
 
 
 

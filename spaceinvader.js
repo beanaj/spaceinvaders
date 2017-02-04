@@ -3,13 +3,19 @@ gameScreen.width=SCREEN_WIDTH;
 gameScreen.height=SCREEN_HEIGHT;
 var ctx = gameScreen.getContext("2d");
 //-----GLOBAL VARIABLES
-var score=0;
-var lifes=3;
+var score=0000
+var highScore= 0000;
+var lifes=6;
 var playGame=false;
+//main game images
 var gb = new Image();
 gb.src = PATH_GB;
+
 var gover= new Image();
 gover.src = PATH_GAMEOVER;
+
+var lifeImage= new Image();
+lifeImage.src = PATH_LIVES;
 //loading screen for images etc.
 
 ctx.beginPath();
@@ -63,6 +69,9 @@ play.onload = function(){
 //variables for draw instruction animations
 var currentX= CONT_START_X;
 var currentY= CONT_START_Y;
+//for lives
+var lifex= LIVES_START_X;
+var lifey= LIVES_START_Y;
 var animID;
 function draw(){
     setTimeout(function(){
@@ -84,11 +93,62 @@ function draw(){
         }
     }else{
         ctx.drawImage(gb, 0, 0);
+        //adding all text, high schor, score, lives and credits
+        //score and high score static
+        ctx.font = "16px Lucida Console";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left";
+        ctx.fillText("S C O R E < 1 > H I - S C O R E < 2 >",15, 20);
+
+        //score and high score dynamic
+        ctx.font = "16px Lucida Console";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left";
+        ctx.fillText(scorePad(score),115, 40);
+        //highscore
+        ctx.font = "16px Lucida Console";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left";
+        ctx.fillText(scorePad(highScore),330, 40);
+
+        //adding the lives
+        ctx.font = "16px Lucida Console";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left";
+        ctx.fillText(lifes,10, 390);
+
+        switch(lifes) {
+        case 5:
+            lifey+=LIVES_HEIGHT;
+            break;
+        case 4:
+            lifey+=LIVES_HEIGHT;
+            break;
+        case 3:
+            lifey+=LIVES_HEIGHT;
+            break;
+        case 2:
+            lifey+=LIVES_HEIGHT;
+            break;
+        case 1:
+            lifey+=LIVES_HEIGHT;
+            break;
+        }
+        lifes--;
+        ctx.drawImage(lifeImage, lifex, lifey, LIVES_WIDTH, LIVES_HEIGHT, LIVES_X, LIVES_Y, LIVES_WIDTH, LIVES_HEIGHT);
+
+
     }
 
 
 }
 
+function scorePad(score){
+    score = ""+ score;
+    var pad ="0000"
+    var padded = pad.substring(0, pad.length-score.length)+score;
+    return padded;
+}
 
 function playGameButton(evt){
   //display controls and instuructions for the game
