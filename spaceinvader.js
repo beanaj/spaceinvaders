@@ -6,17 +6,35 @@ var ctx = gameScreen.getContext("2d");
 var score=0000
 var highScore= 0000;
 var lifes=6;
+var bubbleLives=5;
+var bubbleSubtract = false;
 var playGame=false;
 var gameOver=false;
 //main game images
 var gb = new Image();
 gb.src = PATH_GB;
 
+//gameover screen
 var gover= new Image();
 gover.src = PATH_GAMEOVER;
 
+//life counters
 var lifeImage= new Image();
 lifeImage.src = PATH_LIVES;
+
+//bubble counters
+var bubbleLife = new Image();
+bubbleLife.src = PATH_BUBBLES_LEFT;
+
+//cannon image
+var cannon = new Image();
+cannon.src = PATH_CANNON;
+//cannon controls
+var rightDown= false;
+var leftDown= false;
+var spaceDown = false;
+var sDown = false;
+
 //loading screen for images etc.
 
 ctx.beginPath();
@@ -63,9 +81,29 @@ splash.onload = function(){
 
 play.onload = function(){
     ctx.drawImage(play, PLAY_X, PLAY_Y);
+    init();
     gameScreen.addEventListener("click", playGameButton);
 }
 
+//controls initilization
+function init(){
+    window.addEventListener('keydown',keyDown,true);
+	window.addEventListener('keyup',keyUp,true);
+}
+
+function keyDown(evt) {
+    if (evt.keyCode == 39) 			rightDown = true;
+    else if (evt.keyCode == 37) 	leftDown = true;
+    else if (evt.keyCode == 32)       spaceDown = true;
+    else if (evt.keyCode == 83)       sDown = true;
+}
+
+function keyUp(evt) {
+    if (evt.keyCode == 39) 			rightDown = false;
+    else if (evt.keyCode == 37) 	leftDown = false;
+    else if (evt.keyCode == 32)     spaceDown = false;
+    else if (evt.keyCode == 83)       sDown = false;
+}
 
 //variables for draw instruction animations
 var currentX= CONT_START_X;
@@ -73,12 +111,21 @@ var currentY= CONT_START_Y;
 //for lives
 var lifex= LIVES_START_X;
 var lifey= LIVES_START_Y;
+//for bubble lifes
+var bubblelifex = BUBBLES_START_X;
+var bubblelifey = BUBBLES_START_Y;
+//for cannon
+var canx = CANNON_START_X;
+var cany = CANNON_START_Y;
+var canFlip=false;
 var animID;
+var fps=2;
+var angle = 0;
 function draw(){
     setTimeout(function(){
 
     animID=requestAnimationFrame(draw);
-    }, 1000/ 2);
+    }, 1000/ fps);
     if(playGame==false){
         ctx.beginPath();
         ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -97,9 +144,13 @@ function draw(){
         setTimeout(function(){playGame=false;
                               gameOver=false;
                               lifes=6;
+                              lifey=0;
+                              score=0;
+                              bubbleLives=5;
                              },5000);
 
     }else{
+        fps=60;
         ctx.drawImage(gb, 0, 0);
         //adding all text, high schor, score, lives and credits
         //score and high score static
@@ -127,19 +178,19 @@ function draw(){
 
         switch(lifes) {
         case 5:
-            lifey+=LIVES_HEIGHT;
+            lifey=LIVES_HEIGHT;
             break;
         case 4:
-            lifey+=LIVES_HEIGHT;
+            lifey=LIVES_HEIGHT*2;
             break;
         case 3:
-            lifey+=LIVES_HEIGHT;
+            lifey=3*LIVES_HEIGHT;
             break;
         case 2:
-            lifey+=LIVES_HEIGHT;
+            lifey=4*LIVES_HEIGHT;
             break;
         case 1:
-            lifey+=LIVES_HEIGHT;
+            lifey=5*LIVES_HEIGHT;
             break;
         }
 
@@ -147,7 +198,68 @@ function draw(){
         if(lifes==0){
             gameOver=true;
         }
-lifes--;
+
+        //adding bubble lives
+        switch(bubbleLives) {
+            case 5:
+                bubblelifey=0;
+                break;
+            case 4:
+                bubblelifey=BUBBLES_HEIGHT;
+                break;
+            case 3:
+                bubblelifey=2*BUBBLES_HEIGHT;
+                break;
+            case 2:
+                bubblelifey=3*BUBBLES_HEIGHT;
+                break;
+            case 1:
+                bubblelifey=4*BUBBLES_HEIGHT;
+                break;
+            case 0:
+                bubblelifey=5*BUBBLES_HEIGHT;
+                break;
+            }
+
+        ctx.drawImage(bubbleLife, bubblelifex, bubblelifey, BUBBLES_WIDTH, BUBBLES_HEIGHT, BUBBLES_X, BUBBLES_Y, BUBBLES_WIDTH, BUBBLES_HEIGHT);
+
+        //adding cannon
+
+        ctx.drawImage(cannon, canx, cany, CANNON_WIDTH, CANNON_HEIGHT, CANNON_X, CANNON_Y, CANNON_WIDTH, CANNON_HEIGHT);
+        //animating the cannon jets
+        if(canFlip==true){
+            canx+=CANNON_WIDTH;
+            canFlip=false;
+        }else{
+            canx=0;
+            canFlip=true;
+        }
+        //controlling cannon movement
+        if(rightDown==true&&CANNON_X<=GB_RIGHT_BORDER){
+
+        }else if(leftDown==true&&CANNON_X>=GB_LEFT_BORDER){
+
+        }else if(spaceDown==true){
+            ctx.font = "16px Lucida Console";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "left";
+            ctx.fillText("BANG!",200, 200);
+        }else if(sDown==true&&bubbleLives>0){
+            bubbleLives-=1;
+            sDown=false;
+            ctx.font = "16px Lucida Console";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "left";
+            ctx.fillText("Shield!",CANNON_X, CANNON_Y-20);
+        }
+
+        //adding invaders!
+        //creating invader object
+        //row 3
+        var topInvaders = {
+
+        }
+
     }
 
 

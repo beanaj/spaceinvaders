@@ -31,6 +31,8 @@ var CONT_WIDTH = 30,
     PATH_CONT="img/continuesprite.png";
 //game backround variables
 var PATH_GB="img/gamebackround.png";
+var GB_LEFT_BORDER = 20,
+    GB_RIGHT_BORDER = 343;
 //game lives variables-----------------------------------------------------------
 var PATH_LIVES="img/lives.png";
 var LIVES_WIDTH = 131,
@@ -43,5 +45,33 @@ var LIVES_WIDTH = 131,
 //game over variables-----------------------------------------------------------
 var PATH_GAMEOVER = "img/gameover.png";
 
+//sprite variables
+//sprite top row, baddies
+var PATH_BADDIES = "img/baddies.png";
+var BADDIES_WIDTH = 42,
+    BADDIES_HEIGHT = 33,
+    BADDIES_START_X = 0,
+    BADDIES_START_Y = 0,
+    BADDIES_MAX_Y = 33,
+    BADDIES_X = 30,
+    BADDIES_Y = 375;
 
+//cannon variables
+var PATH_CANNON = "img/cannon.png";
+var CANNON_WIDTH = 37,
+    CANNON_HEIGHT = 24,
+    CANNON_START_X = 0,
+    CANNON_START_Y = 0,
+    CANNON_MAX_Y = 74,
+    CANNON_X = 185,
+    CANNON_Y = 340;
 
+//bubble left variables
+var PATH_BUBBLES_LEFT = "img/bubblesleft.png";
+var BUBBLES_WIDTH = 131,
+    BUBBLES_HEIGHT = 20,
+    BUBBLES_START_X = 0,
+    BUBBLES_START_Y = 0,
+    BUBBLES_MAX_Y = 100,
+    BUBBLES_X = 260,
+    BUBBLES_Y = 375;
