@@ -107,16 +107,14 @@ function setReady(){
 
 
 splash.onload = function(){
-    ctx.beginPath();
-    ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-    ctx.fillStyle="#000000";
-    ctx.fill();
-
     var x=25;
-
-    ctx.drawImage(splash, x, 0);
     play.onload = function(){
+        ctx.beginPath();
+        ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+        ctx.fillStyle="#000000";
+        ctx.fill();
         ctx.drawImage(play, PLAY_X, PLAY_Y);
+        ctx.drawImage(splash, x, 0);
         init();
         gameScreen.addEventListener("click", playGameButton);
     }
@@ -264,10 +262,7 @@ function missleLaunch(){
                 missle.y=0;
             }
         }else if(missle.y<=0){
-            ctx.beginPath();
-            ctx.rect(missle.x,missle.y,11,10);
-            ctx.fillStyle="#000000";
-            ctx.fill();
+
             missleAlive=false;
         }else if(missle.y<20){
             ctx.drawImage(misexplosion, missle.x, missle.y);
