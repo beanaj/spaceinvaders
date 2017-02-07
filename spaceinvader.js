@@ -656,7 +656,7 @@ function invadersDraw(){
             }
             mothership.explode=false;
             mothership.alive=false;
-            }
+
         }else{
             if(mothership.alive==true){
             switch(mothership.HP){
