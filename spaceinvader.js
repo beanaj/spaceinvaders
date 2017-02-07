@@ -445,6 +445,10 @@ function draw(){
                               score=0;
                               bubbleLives=5;
                               fps=2;
+                              topRow=new Array();
+                              midRow=new Array();
+                              bot0Row=new Array();
+                              bot1Row=new Array();
                              },5000);
 
     }else{
