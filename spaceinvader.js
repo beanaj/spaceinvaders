@@ -162,18 +162,23 @@ var missleSpeed=5;
 // for invaders-----------------------------------------
 var animateCounter=0;
 var animateInvadersBool=true;
-
+var speed=.1;
+var left=false;
+var right=true;
+var down=false;
 //top row
 var topRow = new Array();
 var topx = 0;
 var topy = 0;
 var numberOfInvaders=10;
+var topCount=0;
 
 //mid row
 var midRow = new Array();
 var midx = 0;
 var midy = 0;
 var numberOfInvadersMid=10;
+var midCount=0;
 
 //first bottom row
 var bot1Row = new Array();
@@ -268,9 +273,27 @@ function row0init(){
 function contactExplosion(){
     //sizes of invader bounds for contact
     for(var i=0; i<numberOfInvaders;i++){
+        var invaderx=midRow[i].x;
+        var invadery=midRow[i].y;
+        var topInvaderxhigh=invaderx+MIDINV_WIDTH-14;
+        var topInvaderyhigh=invadery+MIDINV_HEIGHT-10;
+        if(invaderx<missle.x&&invadery<missle.y&&
+          topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
+          midRow[i].alive==true){
+            score += 20;
+            if(score>highScore){
+                highScore+=20;
+            }
+            speed+=.01;
+            midRow[i].explode=true;
+            return true;
+        }
+    }
+
+    for(var i=0; i<numberOfInvaders;i++){
         var invaderx=topRow[i].x;
         var invadery=topRow[i].y;
-        var topInvaderxhigh=invaderx+TOPINV_WIDTH-10;
+        var topInvaderxhigh=invaderx+TOPINV_WIDTH-14;
         var topInvaderyhigh=invadery+TOPINV_HEIGHT-10;
         if(invaderx<missle.x&&invadery<missle.y&&
           topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
@@ -279,11 +302,12 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=30;
             }
-
+            speed+=.01;
             topRow[i].explode=true;
             return true;
         }
     }
+
 }
 
 function invadersDraw(){
@@ -294,31 +318,97 @@ function invadersDraw(){
             bot1x+=BOTINV_WIDTH;
             bot0x+=BOTINV_WIDTH;
             animateInvadersBool=false;
+
         }else{
             topx=0;
             midx=0;
             bot1x=0;
             bot0x=0;
             animateInvadersBool=true;
-        }
 
+            }
+
+        }
+    //moving the invaders left and right down the screen, increasing in speed as invaders are killed XD
+    if(left==true&&down==false){
+        for(var i=0; i<numberOfInvaders;i++){
+            topRow[i].x-=speed;
+            midRow[i].x-=speed;
+            bot1Row[i].x-=speed;
+            bot0Row[i].x-=speed;
+            if(topRow[0].x<10){
+                down=true;
+            }
+        }
+    }else if(right==true&&down==false){
+        for(var i=0; i<numberOfInvaders;i++){
+            topRow[i].x+=speed;
+            midRow[i].x+=speed;
+            bot1Row[i].x+=speed;
+            bot0Row[i].x+=speed;
+            if(topRow[9].x>SCREEN_WIDTH-40){
+                down=true;
+                }
+            }
+    }else if(down==true){
+
+        if(left){
+            left=false;
+            right=true;
+        }else{
+            left=true;
+            right=false;
+        }
+        down=false;
+        for(var j=0; j<numberOfInvaders;j++){
+            topRow[j].y+=5;
+            midRow[j].y+=5;
+            bot1Row[j].y+=5;
+            bot0Row[j].y+=5;
+            //making sure you lose if the invaders reach the cannon
+            if(bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT){
+                lifes=0;
+            }
+        }
     }
+
     animateCounter++;
     for(var i=0; i<numberOfInvaders;i++){
         if(topRow[i].explode==true){
-            ctx.drawImage(explosion, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x+5, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
+            ctx.drawImage(explosion, topRow[i].x+2, topRow[i].y);
+            topCount++;
+            if(topCount==5){
+            topCount=0;
             topRow[i].explode=false;
             topRow[i].alive=false;
+            }
         }else{
             if(topRow[i].alive==true){
                 ctx.drawImage(topInvaderImage, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
             }
         }
-        ctx.drawImage(midInvaderImage, midx, midy, MIDINV_WIDTH, MIDINV_HEIGHT, midRow[i].x, midRow[i].y, 0.9*MIDINV_WIDTH, 0.9*MIDINV_HEIGHT);
+
+    //middle
+        if(midRow[i].explode==true){
+            ctx.drawImage(explosion, midRow[i].x, midRow[i].y);
+            midCount++;
+            if(midCount==5){
+            midCount=0;
+            midRow[i].explode=false;
+            midRow[i].alive=false;
+            }
+        }else{
+            if(midRow[i].alive==true){
+                ctx.drawImage(midInvaderImage, midx, midy, MIDINV_WIDTH, MIDINV_HEIGHT, midRow[i].x, midRow[i].y, 0.9*MIDINV_WIDTH, 0.9*MIDINV_HEIGHT);
+            }
+        }
+
 
         ctx.drawImage(bottomInvaderImage, bot1x, bot1y, BOTINV_WIDTH, BOTINV_HEIGHT, bot1Row[i].x, bot1Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
 
         ctx.drawImage(bottomInvaderImage, bot0x, bot0y, BOTINV_WIDTH, BOTINV_HEIGHT, bot0Row[i].x, bot0Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
+
+
     }
 
     //catching overflow
@@ -354,6 +444,7 @@ function draw(){
                               lifey=0;
                               score=0;
                               bubbleLives=5;
+                              fps=2;
                              },5000);
 
     }else{
