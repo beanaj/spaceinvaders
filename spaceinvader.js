@@ -158,6 +158,7 @@ var bubblelifey = BUBBLES_START_Y;
 var canx = CANNON_START_X;
 var cany = CANNON_START_Y;
 var canFlip=false;
+var respawn=false;
 var counter=0;
 var animID;
 var fps=2;
@@ -232,16 +233,20 @@ function bubbleDraw(){
         if(bubbleArray[i].inField==true&&bubbleArray[i].isDead==false){
             switch(bubbleArray[i].HP){
                 case 4:
+                    ctx.drawImage(bubbleShield, shieldx, shieldy, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
                     break;
                 case 3:
+                    ctx.drawImage(bubbleShield, shieldx, shieldy+BUBBLE_SHIELD_HEIGHT, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
                     break;
                 case 2:
+                    ctx.drawImage(bubbleShield, shieldx, shieldy+(2*BUBBLE_SHIELD_HEIGHT), BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
                     break;
                 case 1:
+                    ctx.drawImage(bubbleShield, shieldx, shieldy+(3*BUBBLE_SHIELD_HEIGHT+1), BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
                     break;
             }
 
-            ctx.drawImage(bubbleShield, shieldx, shieldy, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
+
         }
     }
 }
@@ -275,6 +280,7 @@ function mothershipMissleLaunch(){
             var bool=motherMissHit();
             if(bool){
                 mothermiss1.y=0;
+                mothershipMissle1Alive=false;
             }
         }else if(mothermiss1.y>=SCREEN_HEIGHT-33){
             mothershipMissle1Alive=false;
@@ -286,6 +292,7 @@ function mothershipMissleLaunch(){
             var bool=motherMissHit();
             if(bool){
                 mothermiss2.y=0;
+                mothershipMissle2Alive=false;
             }
         }else if(mothermiss2.y>=SCREEN_HEIGHT-33){
             mothershipMissle2Alive=false;
@@ -435,6 +442,50 @@ function contactExplosion(){
 }
 
 function motherMissHit(){
+    for(var i=0; i<5;i++){
+        if(bubbleArray[i].HP==0){
+            bubbleArray[i].isDead=true;
+            bubbleArray[i].inField=false;
+        }
+        var cannonx= bubbleArray[i].x;
+        var cannony= bubbleArray[i].y;
+        var topCannonx= cannonx+BUBBLE_SHIELD_WIDTH;
+        var topCannony= cannony+BUBBLE_SHIELD_WIDTH;
+        if(cannonx<mothermiss1.x&&cannony<mothermiss1.y&& topCannonx>mothermiss1.x&&topCannony>mothermiss1.y&&
+        bubbleArray[i].inField==true){
+            if(cannonx<mothermiss2.x&&cannony<mothermiss2.y&&
+            topCannonx>mothermiss2.x&&topCannony>mothermiss2.y&&
+               bubbleArray[i].alive==true){
+                bubbleArray[i].HP--;
+                return true;
+            }
+            bubbleArray[i].HP--;
+            return true;
+        }
+
+
+
+    }
+    var cannonx= CANNON_X;
+    var cannony= CANNON_Y;
+    var topCannonx= CANNON_X+CANNON_WIDTH;
+    var topCannony= CANNON_Y+CANNON_HEIGHT;
+    if(cannonx<mothermiss1.x&&cannony<mothermiss1.y&&
+       topCannonx>mothermiss1.x&&topCannony>mothermiss1.y){
+        lifes--;
+        respawn=true;
+        CANNON_Y=-340;
+        CANNON_X=-10000;
+        return true;
+    }
+    if(cannonx<mothermiss2.x&&cannony<mothermiss2.y&&
+       topCannonx>mothermiss2.x&&topCannony>mothermiss2.y){
+        lifes--;
+        respawn=true;
+        CANNON_Y=-340;
+        CANNON_X=-10000;
+        return true;
+    }
 
 }
 
@@ -454,6 +505,12 @@ function invadersDraw(){
             mothermiss2.x=mothership.x+MOTHER_WIDTH-11;
             mothermiss1.y=mothership.y+MOTHER_HEIGHT;
             mothermiss2.y=mothership.y+MOTHER_HEIGHT;
+            //respawning cannon if needed
+            if(respawn){
+                respawn=false;
+                CANNON_X=180;
+                CANNON_Y=340;
+            }
         }else{
             topx=0;
             midx=0;
@@ -511,9 +568,9 @@ function invadersDraw(){
             bot1Row[j].y+=5;
             bot0Row[j].y+=5;
             //making sure you lose if the invaders reach the cannon
-            if(bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot0Row[j].alive==true&&
-              bot1Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot1Row[j].alive==true&&
-              midRow[j].y>=CANNON_Y-CANNON_HEIGHT&&midRow[j].alive==true&&
+            if(bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot0Row[j].alive==true||
+              bot1Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot1Row[j].alive==true||
+              midRow[j].y>=CANNON_Y-CANNON_HEIGHT&&midRow[j].alive==true||
               topRow[j].y>=CANNON_Y-CANNON_HEIGHT&&topRow[j].alive==true){
                 lifes=0;
             }
@@ -604,6 +661,9 @@ function invadersDraw(){
                     ctx.drawImage(mothershipImage, motherx, mothery+(3*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
                 case 2:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(4*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 1:
                     ctx.drawImage(mothershipImage, motherx, mothery+(4*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
             }
