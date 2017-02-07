@@ -66,7 +66,7 @@ var CANNON_WIDTH = 37,
     CANNON_X = 185,
     CANNON_Y = 340;
 
-//bubble left variables
+//bubble lives left variables
 var PATH_BUBBLES_LEFT = "img/bubblesleft.png";
 var BUBBLES_WIDTH = 131,
     BUBBLES_HEIGHT = 20,
@@ -75,3 +75,23 @@ var BUBBLES_WIDTH = 131,
     BUBBLES_MAX_Y = 100,
     BUBBLES_X = 260,
     BUBBLES_Y = 375;
+
+//bubble shield variables
+var PATH_BUBBLES_SHIELD = "img/bubble.png";
+var BUBBLE_SHIELD_WIDTH = 47,
+    BUBBLE_SHIELD_HEIGHT = 25,
+    BUBBLE_SHIELD_START_X = 0,
+    BUBBLE_SHIELD_START_Y = 0,
+    BUBBLE_SHIELD_MAX_Y = 100;
+
+//missle variables
+var PATH_MISS = "img/missle.png";
+
+//top row invader variables
+var PATH_TOP_INVADER = "img/baddies.png";
+var TOPINV_WIDTH = 42,
+    TOPINV_HEIGHT = 33,
+    TOPINV_START_X = 0,
+    TOPINV_START_Y = 0,
+    TOPINV_MAX_X = 84,
+

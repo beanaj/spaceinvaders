@@ -35,6 +35,18 @@ var leftDown= false;
 var spaceDown = false;
 var sDown = false;
 
+//bubble shield image
+var bubbleShield = new Image();
+bubbleShield.src = PATH_BUBBLES_SHIELD;
+
+//missle image
+var missleimg = new Image();
+missleimg.src = PATH_MISS;
+
+//invaders images
+//top row
+var topInvaderImage= new image();
+topInvaderImage.src =
 //loading screen for images etc.
 
 ctx.beginPath();
@@ -118,9 +130,67 @@ var bubblelifey = BUBBLES_START_Y;
 var canx = CANNON_START_X;
 var cany = CANNON_START_Y;
 var canFlip=false;
+var counter=0;
 var animID;
 var fps=2;
 var angle = 0;
+
+//for bubble shields
+//initializing the array of bubble shields
+var bubbleArray= new Array();
+var shieldx= BUBBLE_SHIELD_START_X;
+var shieldy= BUBBLE_SHIELD_START_Y;
+
+//for friendly missle
+var missle = new cannonMissle(-100, -100, false, false);
+var missleAlive=false;
+var missleSpeed=10;
+
+// for invaders-----------------------------------------
+//top row
+var topRow = new Array();
+
+function bubbleInit(){
+    for(var i=1; i<=bubbleLives;i++){
+        var bubble = new shield(i, -100, -100, false, false, 4);
+        bubbleArray.push(bubble);
+    }
+}
+
+function bubbleDraw(){
+    for(var i=0; i<5;i++){
+        if(bubbleArray[i].inField==true&&bubbleArray[i].isDead==false){
+             ctx.drawImage(bubbleShield, shieldx, shieldy, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
+        }
+    }
+}
+
+function missleLaunch(){
+
+        if(missle.y>0){
+            ctx.drawImage(missleimg, missle.x, missle.y);
+            missle.y-=missleSpeed;
+        }else if(missle.y<=0){
+            missleAlive=false;
+        }
+
+
+}
+
+function row3init(){
+    var invadery=100;
+    var invaderx=10;
+    for(var i=1; i<=10;i++){
+        var invader = new invader(invaderx, invadery, true);
+        topRow.push(invader);
+        invaderx+=10;
+    }
+}
+
+function invadersDraw(){
+
+}
+
 function draw(){
     setTimeout(function(){
 
@@ -139,6 +209,7 @@ function draw(){
         if(currentY>=CONT_MAX_Y){
             currentY=0;
         }
+
     }else if(gameOver==true){
         ctx.drawImage(gover, 0, 0);
         setTimeout(function(){playGame=false;
@@ -227,42 +298,70 @@ function draw(){
 
         ctx.drawImage(cannon, canx, cany, CANNON_WIDTH, CANNON_HEIGHT, CANNON_X, CANNON_Y, CANNON_WIDTH, CANNON_HEIGHT);
         //animating the cannon jets
-        if(canFlip==true){
-            canx+=CANNON_WIDTH;
-            canFlip=false;
-        }else{
-            canx=0;
-            canFlip=true;
+        if(counter%10==0){
+            if(canx==0){
+                canx+=CANNON_WIDTH;
+            }else{
+                canx=0;
+            }
+        }
+        counter++;
+        //catching the rare chance for overflow
+        if(counter>101){
+            counter=0;
         }
         //controlling cannon movement
+
+
         if(rightDown==true&&CANNON_X<=GB_RIGHT_BORDER){
-
+            CANNON_X+=3;
         }else if(leftDown==true&&CANNON_X>=GB_LEFT_BORDER){
-
+            CANNON_X-=3;
         }else if(spaceDown==true){
-            ctx.font = "16px Lucida Console";
-            ctx.fillStyle = "white";
-            ctx.textAlign = "left";
-            ctx.fillText("BANG!",200, 200);
+            if(missleAlive==false){
+                missleAlive=true;
+                missle.x=CANNON_X+17;
+                missle.y=CANNON_Y-10;
+            }
         }else if(sDown==true&&bubbleLives>0){
+            var ID=bubbleLives-1;
+            bubbleArray[ID].x=CANNON_X;
+            bubbleArray[ID].y=CANNON_Y-30;
+            bubbleArray[ID].inField=true;
             bubbleLives-=1;
             sDown=false;
-            ctx.font = "16px Lucida Console";
-            ctx.fillStyle = "white";
-            ctx.textAlign = "left";
-            ctx.fillText("Shield!",CANNON_X, CANNON_Y-20);
         }
-
+        missleLaunch();
+        bubbleDraw();
         //adding invaders!
-        //creating invader object
-        //row 3
-        var topInvaders = {
-
-        }
-
+        invadersDraw();
     }
 
 
+}
+
+//function for the shield objects
+function shield(bubbleLives, x, y, inField, isDead, HP){
+    this.ID=bubbleLives;
+    this.x=x;
+    this.y=y;
+    this.inField=inField;
+    this.isDead=isDead;
+    this.HP=HP;
+}
+//function for friendly missle objects
+function cannonMissle(x, y, inField, isDead){
+    this.x=x;
+    this.y=y;
+    this.inField=inField;
+    this.isDead=isDead;
+}
+
+//function for top row of invaders
+function invaderTop(x, y, alive){
+    this.x=x;
+    this.y=y;
+    this.alive=false;
 }
 
 function scorePad(score){
@@ -292,6 +391,7 @@ function gameStart(evt){
        evt.pageX < widthRange &&
        evt.pageY >CONT_Y &&
        evt.pageY < heightRange){
+            bubbleInit();
             playGame=true;
     }
 }
