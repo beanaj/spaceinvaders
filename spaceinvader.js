@@ -115,15 +115,15 @@ splash.onload = function(){
     var x=25;
 
     ctx.drawImage(splash, x, 0);
-
+    play.onload = function(){
+        ctx.drawImage(play, PLAY_X, PLAY_Y);
+        init();
+        gameScreen.addEventListener("click", playGameButton);
+    }
     //add play! option
 }
 
-play.onload = function(){
-    ctx.drawImage(play, PLAY_X, PLAY_Y);
-    init();
-    gameScreen.addEventListener("click", playGameButton);
-}
+
 
 //controls initilization
 function init(){
@@ -179,6 +179,7 @@ var missleSpeed=5;
 var animateCounter=0;
 var animateInvadersBool=true;
 var speed=.1;
+var speedSave=speed;
 var left=false;
 var right=true;
 var down=false;
@@ -725,6 +726,7 @@ function draw(){
                               respawn=false;
                               CANNON_X=180;
                               CANNON_Y=340;
+                              bubbleArray= new Array();
                               topRow=new Array();
                               midRow=new Array();
                               bot0Row=new Array();
@@ -735,9 +737,8 @@ function draw(){
     }else if(gameWin()==true){
         setTimeout(function(){playGame=true;
                               gameOver=false;
-                              lifes=6;
-                              lifey=0;
                               bubbleLives=5;
+                              bubbleArray=new Array();
                               topRow=new Array();
                               midRow=new Array();
                               bot0Row=new Array();
@@ -748,6 +749,7 @@ function draw(){
                               row2init();
                               row1init();
                               row0init();
+                              speed=speedSave;
                               speed+=.1;
                              },5000);
     }else{
