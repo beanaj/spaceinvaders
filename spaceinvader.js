@@ -182,6 +182,7 @@ var speed=.1;
 var left=false;
 var right=true;
 var down=false;
+var lostLife=false;
 //top row
 var topRow = new Array();
 var topx = 0;
@@ -481,17 +482,16 @@ function motherMissHit(){
     var topCannony= CANNON_Y+CANNON_HEIGHT;
     if(cannonx<mothermiss1.x&&cannony<mothermiss1.y&&
        topCannonx>mothermiss1.x&&topCannony>mothermiss1.y){
-        lifes--;
+        lostLife=true;
         respawn=true;
-        CANNON_Y=-340;
+        CANNON_Y=340;
         CANNON_X=-10000;
         return true;
-    }
-    if(cannonx<mothermiss2.x&&cannony<mothermiss2.y&&
+    }else if(cannonx<mothermiss2.x&&cannony<mothermiss2.y&&
        topCannonx>mothermiss2.x&&topCannony>mothermiss2.y){
-        lifes--;
+        lostLife=true;
         respawn=true;
-        CANNON_Y=-340;
+        CANNON_Y=340;
         CANNON_X=-10000;
         return true;
     }
@@ -577,11 +577,11 @@ function invadersDraw(){
             bot1Row[j].y+=5;
             bot0Row[j].y+=5;
             //making sure you lose if the invaders reach the cannon
-            if(bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot0Row[j].alive==true||
-              bot1Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot1Row[j].alive==true||
-              midRow[j].y>=CANNON_Y-CANNON_HEIGHT&&midRow[j].alive==true||
-              topRow[j].y>=CANNON_Y-CANNON_HEIGHT&&topRow[j].alive==true){
-                lifes=0;
+            if((bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot0Row[j].alive==true)||
+              (bot1Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot1Row[j].alive==true)||
+              (midRow[j].y>=CANNON_Y-CANNON_HEIGHT&&midRow[j].alive==true)||
+              (topRow[j].y>=CANNON_Y-CANNON_HEIGHT&&topRow[j].alive==true)){
+                gameOver=true;
             }
         }
     }
@@ -722,6 +722,9 @@ function draw(){
                               score=0;
                               bubbleLives=5;
                               fps=2;
+                              respawn=false;
+                              CANNON_X=180;
+                              CANNON_Y=340;
                               topRow=new Array();
                               midRow=new Array();
                               bot0Row=new Array();
@@ -795,6 +798,10 @@ function draw(){
         ctx.drawImage(lifeImage, lifex, lifey, LIVES_WIDTH, LIVES_HEIGHT, LIVES_X, LIVES_Y, LIVES_WIDTH, LIVES_HEIGHT);
         if(lifes==0){
             gameOver=true;
+        }
+        if(lostLife){
+            lifes--;
+            lostLife=false;
         }
 
         //adding bubble lives
