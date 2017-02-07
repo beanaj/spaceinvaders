@@ -157,7 +157,7 @@ var shieldy= BUBBLE_SHIELD_START_Y;
 //for friendly missle
 var missle = new cannonMissle(-100, -100, false, false);
 var missleAlive=false;
-var missleSpeed=10;
+var missleSpeed=5;
 
 // for invaders-----------------------------------------
 var animateCounter=0;
@@ -207,6 +207,10 @@ function missleLaunch(){
         if(missle.y>0){
             ctx.drawImage(missleimg, missle.x, missle.y);
             missle.y-=missleSpeed;
+            var bool=contactExplosion();
+            if(bool){
+                missle.y=0;
+            }
         }else if(missle.y<=0){
             ctx.beginPath();
             ctx.rect(missle.x,missle.y,11,10);
@@ -260,6 +264,28 @@ function row0init(){
     }
 }
 
+//testing for contact
+function contactExplosion(){
+    //sizes of invader bounds for contact
+    for(var i=0; i<numberOfInvaders;i++){
+        var invaderx=topRow[i].x;
+        var invadery=topRow[i].y;
+        var topInvaderxhigh=invaderx+TOPINV_WIDTH-10;
+        var topInvaderyhigh=invadery+TOPINV_HEIGHT-10;
+        if(invaderx<missle.x&&invadery<missle.y&&
+          topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
+          topRow[i].alive==true){
+            score += 30;
+            if(score>highScore){
+                highScore+=30;
+            }
+
+            topRow[i].explode=true;
+            return true;
+        }
+    }
+}
+
 function invadersDraw(){
     if(animateCounter%75==0){
         if(animateInvadersBool==true){
@@ -280,8 +306,9 @@ function invadersDraw(){
     animateCounter++;
     for(var i=0; i<numberOfInvaders;i++){
         if(topRow[i].explode==true){
+            ctx.drawImage(explosion, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x+5, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
             topRow[i].explode=false;
-            ctx.drawImage(explosion, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
+            topRow[i].alive=false;
         }else{
             if(topRow[i].alive==true){
                 ctx.drawImage(topInvaderImage, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
@@ -443,10 +470,7 @@ function draw(){
         missleLaunch();
         bubbleDraw();
         //adding invaders!
-        row3init();
-        row2init();
-        row1init();
-        row0init();
+
         invadersDraw();
     }
 
@@ -506,6 +530,10 @@ function gameStart(evt){
        evt.pageY >CONT_Y &&
        evt.pageY < heightRange){
             bubbleInit();
+            row3init();
+            row2init();
+            row1init();
+            row0init();
             playGame=true;
     }
 }
