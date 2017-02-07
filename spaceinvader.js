@@ -274,6 +274,7 @@ function missleLaunch(){
 }
 
 function mothershipMissleLaunch(){
+    if(mothershipMissle1Alive==true&&mothershipMissle2Alive==true){
         if(mothermiss1.y<SCREEN_HEIGHT-33){
             ctx.drawImage(mothermissleimg, mothermiss1.x, mothermiss1.y);
             mothermiss1.y+=missleSpeed;
@@ -297,6 +298,7 @@ function mothershipMissleLaunch(){
         }else if(mothermiss2.y>=SCREEN_HEIGHT-33){
             mothershipMissle2Alive=false;
         }
+    }
 }
 
 function row3init(){
@@ -451,18 +453,25 @@ function motherMissHit(){
         var cannony= bubbleArray[i].y;
         var topCannonx= cannonx+BUBBLE_SHIELD_WIDTH;
         var topCannony= cannony+BUBBLE_SHIELD_WIDTH;
-        if(cannonx<mothermiss1.x&&cannony<mothermiss1.y&& topCannonx>mothermiss1.x&&topCannony>mothermiss1.y&&
-        bubbleArray[i].inField==true){
-            if(cannonx<mothermiss2.x&&cannony<mothermiss2.y&&
+        var hit=false;
+        if(cannonx<mothermiss2.x&&cannony<mothermiss2.y&&
             topCannonx>mothermiss2.x&&topCannony>mothermiss2.y&&
-               bubbleArray[i].alive==true){
-                bubbleArray[i].HP--;
-                return true;
-            }
+            bubbleArray[i].inField==true){
             bubbleArray[i].HP--;
-            return true;
+            hit=true;
+        }
+        if(cannonx<mothermiss1.x&&cannony<mothermiss1.y&&
+            topCannonx>mothermiss1.x&&topCannony>mothermiss1.y&&
+            bubbleArray[i].inField==true){
+            if(hit!=true){
+            bubbleArray[i].HP--;
+            }
+            hit=true;
         }
 
+        if(hit){
+            return true;
+        }
 
 
     }
@@ -651,13 +660,25 @@ function invadersDraw(){
                 case 10:
                     ctx.drawImage(mothershipImage, motherx, mothery, MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
+                case 9:
+                    ctx.drawImage(mothershipImage, motherx, mothery, MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
                 case 8:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 7:
                     ctx.drawImage(mothershipImage, motherx, mothery+(MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
                 case 6:
                     ctx.drawImage(mothershipImage, motherx, mothery+(2*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
+                case 5:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(2*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
                 case 4:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(3*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 3:
                     ctx.drawImage(mothershipImage, motherx, mothery+(3*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
                 case 2:
@@ -709,19 +730,22 @@ function draw(){
                              },5000);
 
     }else if(gameWin()==true){
-        ctx.drawImage(gwin, 0, 0);
-        setTimeout(function(){playGame=false;
+        setTimeout(function(){playGame=true;
                               gameOver=false;
                               lifes=6;
                               lifey=0;
-                              score=0;
                               bubbleLives=5;
-                              fps=2;
                               topRow=new Array();
                               midRow=new Array();
                               bot0Row=new Array();
                               bot1Row=new Array();
                               mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
+                              bubbleInit();
+                              row3init();
+                              row2init();
+                              row1init();
+                              row0init();
+                              speed+=.1;
                              },5000);
     }else{
         fps=60;
