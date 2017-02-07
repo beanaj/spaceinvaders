@@ -217,6 +217,7 @@ var mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
 var mothershipCount=0;
 var motherx = 0;
 var mothery = 0;
+var motherScore=250;
 //mothership missles
 var mothermiss1 = new mothershipMissle(-100, -100, false, false);
 var mothermiss2 = new mothershipMissle(-100, -100, false, false);
@@ -428,9 +429,9 @@ function contactExplosion(){
        topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
        mothership.alive==true){
         if(mothership.HP==1){
-            score += 250;
+            score += motherScore;
             if(score>highScore){
-                highScore+=250;
+                highScore+=motherScore;
             }
             speed+=.05;
             mothership.explode=true;
@@ -652,11 +653,12 @@ function invadersDraw(){
             mothershipCount++;
             if(mothershipCount==5){
             motherShipCount=0;
+            }
             mothership.explode=false;
             mothership.alive=false;
             }
         }else{
-             if(mothership.alive==true){
+            if(mothership.alive==true){
             switch(mothership.HP){
                 case 10:
                     ctx.drawImage(mothershipImage, motherx, mothery, MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
@@ -726,12 +728,19 @@ function draw(){
                               respawn=false;
                               CANNON_X=180;
                               CANNON_Y=340;
+                              speed=CONSTANT_SPEED;
                               bubbleArray= new Array();
                               topRow=new Array();
                               midRow=new Array();
                               bot0Row=new Array();
                               bot1Row=new Array();
-                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
+                              missleAlive==false
+                              motherScore=250;
+                              mothership.x=MOTHER_X;
+                              mothership.y=MOTHER_Y;
+                              mothership.alive=true;
+                              mothership.explode=false;
+                              mothership.HP=10;
                              },5000);
 
     }else if(gameWin()==true){
@@ -743,12 +752,20 @@ function draw(){
                               midRow=new Array();
                               bot0Row=new Array();
                               bot1Row=new Array();
-                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
+                              missleAlive==false
+                              mothership.x=MOTHER_X;
+                              mothership.y=MOTHER_Y;
+                              mothership.alive=true;
+                              mothership.explode=false;
+                              mothership.HP=10;
+                              mothershipMissle1Alive=false;
+                              mothershipMissle2Alive=false;
                               bubbleInit();
                               row3init();
                               row2init();
                               row1init();
                               row0init();
+                              motherScore+=50;
                               speed=speedSave;
                               speed+=.1;
                              },5000);

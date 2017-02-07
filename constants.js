@@ -127,4 +127,5 @@ var MOTHER_X=180,
     MOTHER_HEIGHT=21,
     MOTHER_START_X=0,
     MOTHER_START_Y=0;
-
+//var for spee
+var CONSTANT_SPEED = .1;
