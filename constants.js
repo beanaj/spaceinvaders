@@ -63,7 +63,7 @@ var CANNON_WIDTH = 37,
     CANNON_START_X = 0,
     CANNON_START_Y = 0,
     CANNON_MAX_Y = 74,
-    CANNON_X = 185,
+    CANNON_X = 180,
     CANNON_Y = 340;
 
 //bubble lives left variables
@@ -93,5 +93,5 @@ var TOPINV_WIDTH = 42,
     TOPINV_HEIGHT = 33,
     TOPINV_START_X = 0,
     TOPINV_START_Y = 0,
-    TOPINV_MAX_X = 84,
+    TOPINV_MAX_X = 84;
 
