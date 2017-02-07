@@ -94,4 +94,23 @@ var TOPINV_WIDTH = 42,
     TOPINV_START_X = 0,
     TOPINV_START_Y = 0,
     TOPINV_MAX_X = 84;
+//mid row invader variables
+var PATH_MID_INVADER = "img/baddiesmid.png";
+var MIDINV_WIDTH = 30,
+    MIDINV_HEIGHT = 24,
+    MIDINV_START_X = 0,
+    MIDINV_START_Y = 0,
+    MIDINV_MAX_X = 60;
 
+//bottom rows invader variables
+var PATH_BOT_INVADER = "img/baddiesbottom.png";
+var BOTINV_WIDTH = 36,
+    BOTINV_HEIGHT = 30,
+    BOTINV_START_X = 0,
+    BOTINV_START_Y = 0,
+    BOTINV_MAX_X = 72;
+
+//sprite explosion
+var PATH_EXPLOSION = "img/explosion.png";
+//missle explosion
+var PATH_MISEXPLOSION = "img/misexplosion.png";

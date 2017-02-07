@@ -47,8 +47,21 @@ missleimg.src = PATH_MISS;
 //top row
 var topInvaderImage= new Image();
 topInvaderImage.src = PATH_TOP_INVADER;
-//loading screen for images etc.
+//mid row
+var midInvaderImage = new Image();
+midInvaderImage.src = PATH_MID_INVADER;
+//bottom rows
+var bottomInvaderImage = new Image();
+bottomInvaderImage.src = PATH_BOT_INVADER;
+//explosion image
+var explosion = new Image();
+explosion.src = PATH_EXPLOSION;
+//missle explosion
+var misexplosion = new Image();
+misexplosion.src = PATH_MISEXPLOSION;
 
+
+//loading screen for images etc.
 ctx.beginPath();
 ctx.rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 ctx.fillStyle="#000000";
@@ -147,13 +160,32 @@ var missleAlive=false;
 var missleSpeed=10;
 
 // for invaders-----------------------------------------
+var animateCounter=0;
+var animateInvadersBool=true;
+
 //top row
 var topRow = new Array();
 var topx = 0;
 var topy = 0;
 var numberOfInvaders=10;
-var animateCounter=0;
-var animateInvadersBool=true;
+
+//mid row
+var midRow = new Array();
+var midx = 0;
+var midy = 0;
+var numberOfInvadersMid=10;
+
+//first bottom row
+var bot1Row = new Array();
+var bot1x = 0;
+var bot1y = 0;
+var numberOfInvadersBot1=10;
+
+//first bottom row
+var bot0Row = new Array();
+var bot0x = 0;
+var bot0y = 0;
+var numberOfInvadersBot0=10;
 
 function bubbleInit(){
     for(var i=1; i<=bubbleLives;i++){
@@ -176,7 +208,13 @@ function missleLaunch(){
             ctx.drawImage(missleimg, missle.x, missle.y);
             missle.y-=missleSpeed;
         }else if(missle.y<=0){
+            ctx.beginPath();
+            ctx.rect(missle.x,missle.y,11,10);
+            ctx.fillStyle="#000000";
+            ctx.fill();
             missleAlive=false;
+        }else if(missle.y<20){
+            ctx.drawImage(misexplosion, missle.x, missle.y);
         }
 
 
@@ -184,10 +222,40 @@ function missleLaunch(){
 
 function row3init(){
     var invadery=100;
+    var invaderx=26;
+    for(var i=1; i<=numberOfInvaders;i++){
+        var invaders = new invader(invaderx, invadery, true, false);
+        topRow.push(invaders);
+        invaderx+=35;
+    }
+}
+
+function row2init(){
+    var invadery=130;
+    var invaderx=28;
+    for(var i=1; i<=numberOfInvaders;i++){
+        var invaders = new invader(invaderx, invadery, true, false);
+        midRow.push(invaders);
+        invaderx+=35;
+    }
+}
+
+function row1init(){
+    var invadery=160;
     var invaderx=25;
     for(var i=1; i<=numberOfInvaders;i++){
-        var invader = new invaderTop(invaderx, invadery, true);
-        topRow.push(invader);
+        var invaders = new invader(invaderx, invadery, true, false);
+        bot1Row.push(invaders);
+        invaderx+=35;
+    }
+}
+
+function row0init(){
+    var invadery=190;
+    var invaderx=25;
+    for(var i=1; i<=numberOfInvaders;i++){
+        var invaders = new invader(invaderx, invadery, true, false);
+        bot0Row.push(invaders);
         invaderx+=35;
     }
 }
@@ -196,16 +264,34 @@ function invadersDraw(){
     if(animateCounter%75==0){
         if(animateInvadersBool==true){
             topx+=TOPINV_WIDTH;
+            midx+=MIDINV_WIDTH;
+            bot1x+=BOTINV_WIDTH;
+            bot0x+=BOTINV_WIDTH;
             animateInvadersBool=false;
         }else{
             topx=0;
+            midx=0;
+            bot1x=0;
+            bot0x=0;
             animateInvadersBool=true;
         }
 
     }
     animateCounter++;
     for(var i=0; i<numberOfInvaders;i++){
-        ctx.drawImage(topInvaderImage, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
+        if(topRow[i].explode==true){
+            topRow[i].explode=false;
+            ctx.drawImage(explosion, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
+        }else{
+            if(topRow[i].alive==true){
+                ctx.drawImage(topInvaderImage, topx, topy, TOPINV_WIDTH, TOPINV_HEIGHT, topRow[i].x, topRow[i].y, 0.75*TOPINV_WIDTH, 0.75*TOPINV_HEIGHT);
+            }
+        }
+        ctx.drawImage(midInvaderImage, midx, midy, MIDINV_WIDTH, MIDINV_HEIGHT, midRow[i].x, midRow[i].y, 0.9*MIDINV_WIDTH, 0.9*MIDINV_HEIGHT);
+
+        ctx.drawImage(bottomInvaderImage, bot1x, bot1y, BOTINV_WIDTH, BOTINV_HEIGHT, bot1Row[i].x, bot1Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
+
+        ctx.drawImage(bottomInvaderImage, bot0x, bot0y, BOTINV_WIDTH, BOTINV_HEIGHT, bot0Row[i].x, bot0Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
     }
 
     //catching overflow
@@ -358,6 +444,9 @@ function draw(){
         bubbleDraw();
         //adding invaders!
         row3init();
+        row2init();
+        row1init();
+        row0init();
         invadersDraw();
     }
 
@@ -382,10 +471,11 @@ function cannonMissle(x, y, inField, isDead){
 }
 
 //function for top row of invaders
-function invaderTop(x, y, alive){
+function invader(x, y, alive, explode){
     this.x=x;
     this.y=y;
-    this.alive=false;
+    this.alive=alive;
+    this.explode=explode;
 }
 
 function scorePad(score){
