@@ -47,6 +47,10 @@ bubbleShield.src = PATH_BUBBLES_SHIELD;
 var missleimg = new Image();
 missleimg.src = PATH_MISS;
 
+//mother ship missle
+var mothermissleimg = new Image();
+mothermissleimg.src = PATH_MOTHER_MISS;
+
 //invaders images
 //top row
 var topInvaderImage= new Image();
@@ -60,6 +64,8 @@ bottomInvaderImage.src = PATH_BOT_INVADER;
 //mothership image
 var mothershipImage= new Image();
 mothershipImage.src = PATH_MOTHERSHIP;
+
+
 
 //explosion image
 var explosion = new Image();
@@ -204,10 +210,15 @@ var numberOfInvadersBot0=10;
 var bot0Count=0;
 
 //mothership
-var mothership = new motherShip(MOTHER_X, MOTHER_Y, 5, true, false);
+var mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
 var mothershipCount=0;
 var motherx = 0;
 var mothery = 0;
+//mothership missles
+var mothermiss1 = new mothershipMissle(-100, -100, false, false);
+var mothermiss2 = new mothershipMissle(-100, -100, false, false);
+var mothershipMissle1Alive=false;
+var mothershipMissle2Alive=false;
 
 function bubbleInit(){
     for(var i=1; i<=bubbleLives;i++){
@@ -219,7 +230,18 @@ function bubbleInit(){
 function bubbleDraw(){
     for(var i=0; i<5;i++){
         if(bubbleArray[i].inField==true&&bubbleArray[i].isDead==false){
-             ctx.drawImage(bubbleShield, shieldx, shieldy, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
+            switch(bubbleArray[i].HP){
+                case 4:
+                    break;
+                case 3:
+                    break;
+                case 2:
+                    break;
+                case 1:
+                    break;
+            }
+
+            ctx.drawImage(bubbleShield, shieldx, shieldy, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT, bubbleArray[i].x, bubbleArray[i].y, BUBBLE_SHIELD_WIDTH, BUBBLE_SHIELD_HEIGHT);
         }
     }
 }
@@ -244,6 +266,30 @@ function missleLaunch(){
         }
 
 
+}
+
+function mothershipMissleLaunch(){
+        if(mothermiss1.y<SCREEN_HEIGHT-33){
+            ctx.drawImage(mothermissleimg, mothermiss1.x, mothermiss1.y);
+            mothermiss1.y+=missleSpeed;
+            var bool=motherMissHit();
+            if(bool){
+                mothermiss1.y=0;
+            }
+        }else if(mothermiss1.y>=SCREEN_HEIGHT-33){
+            mothershipMissle1Alive=false;
+        }
+
+        if(mothermiss2.y<SCREEN_HEIGHT-33){
+            ctx.drawImage(mothermissleimg, mothermiss2.x, mothermiss2.y);
+            mothermiss2.y+=missleSpeed;
+            var bool=motherMissHit();
+            if(bool){
+                mothermiss2.y=0;
+            }
+        }else if(mothermiss2.y>=SCREEN_HEIGHT-33){
+            mothershipMissle2Alive=false;
+        }
 }
 
 function row3init(){
@@ -388,6 +434,10 @@ function contactExplosion(){
 
 }
 
+function motherMissHit(){
+
+}
+
 function invadersDraw(){
     if(animateCounter%75==0){
         if(animateInvadersBool==true){
@@ -397,6 +447,13 @@ function invadersDraw(){
             bot0x+=BOTINV_WIDTH;
             animateInvadersBool=false;
 
+            //launching invader missles
+            mothershipMissle1Alive=true;
+            mothershipMissle2Alive=true;
+            mothermiss1.x=mothership.x+11;
+            mothermiss2.x=mothership.x+MOTHER_WIDTH-11;
+            mothermiss1.y=mothership.y+MOTHER_HEIGHT;
+            mothermiss2.y=mothership.y+MOTHER_HEIGHT;
         }else{
             topx=0;
             midx=0;
@@ -534,19 +591,19 @@ function invadersDraw(){
         }else{
              if(mothership.alive==true){
             switch(mothership.HP){
-                case 5:
+                case 10:
                     ctx.drawImage(mothershipImage, motherx, mothery, MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
-                case 4:
+                case 8:
                     ctx.drawImage(mothershipImage, motherx, mothery+(MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
-                case 3:
+                case 6:
                     ctx.drawImage(mothershipImage, motherx, mothery+(2*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
-                case 2:
+                case 4:
                     ctx.drawImage(mothershipImage, motherx, mothery+(3*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
-                case 1:
+                case 2:
                     ctx.drawImage(mothershipImage, motherx, mothery+(4*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
                     break;
             }
@@ -588,7 +645,7 @@ function draw(){
                               midRow=new Array();
                               bot0Row=new Array();
                               bot1Row=new Array();
-                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 5, true, false);
+                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
                              },5000);
 
     }else if(gameWin()==true){
@@ -604,7 +661,7 @@ function draw(){
                               midRow=new Array();
                               bot0Row=new Array();
                               bot1Row=new Array();
-                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 5, true, false);
+                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 10, true, false);
                              },5000);
     }else{
         fps=60;
@@ -718,6 +775,7 @@ function draw(){
             sDown=false;
         }
         missleLaunch();
+        mothershipMissleLaunch();
         bubbleDraw();
         //adding invaders!
 
@@ -759,6 +817,14 @@ function motherShip(x, y, HP, alive, explode){
     this.HP=HP;
     this.alive=alive;
     this.explode=explode;
+}
+
+//function for mothership missles objects
+function mothershipMissle(x, y, inField, isDead){
+    this.x=x;
+    this.y=y;
+    this.inField=inField;
+    this.isDead=isDead;
 }
 
 function scorePad(score){

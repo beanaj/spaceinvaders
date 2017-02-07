@@ -89,6 +89,9 @@ var BUBBLE_SHIELD_WIDTH = 47,
 //missle variables
 var PATH_MISS = "img/missle.png";
 
+//missle variables
+var PATH_MOTHER_MISS = "img/mothermissle.png";
+
 //top row invader variables
 var PATH_TOP_INVADER = "img/baddies.png";
 var TOPINV_WIDTH = 42,
