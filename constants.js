@@ -44,6 +44,8 @@ var LIVES_WIDTH = 131,
     LIVES_Y = 375;
 //game over variables-----------------------------------------------------------
 var PATH_GAMEOVER = "img/gameover.png";
+//game win var
+var PATH_GAMEWIN= "img/gamewin.png";
 
 //sprite variables
 //sprite top row, baddies
@@ -114,3 +116,12 @@ var BOTINV_WIDTH = 36,
 var PATH_EXPLOSION = "img/explosion.png";
 //missle explosion
 var PATH_MISEXPLOSION = "img/misexplosion.png";
+//mothership sprite
+var PATH_MOTHERSHIP = "img/mother.png"
+var MOTHER_X=180,
+    MOTHER_Y=60,
+    MOTHER_WIDTH=51,
+    MOTHER_HEIGHT=21,
+    MOTHER_START_X=0,
+    MOTHER_START_Y=0;
+

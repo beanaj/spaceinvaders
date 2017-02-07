@@ -18,6 +18,10 @@ gb.src = PATH_GB;
 var gover= new Image();
 gover.src = PATH_GAMEOVER;
 
+//gamewin screen
+var gwin= new Image();
+gwin.src = PATH_GAMEWIN;
+
 //life counters
 var lifeImage= new Image();
 lifeImage.src = PATH_LIVES;
@@ -53,9 +57,14 @@ midInvaderImage.src = PATH_MID_INVADER;
 //bottom rows
 var bottomInvaderImage = new Image();
 bottomInvaderImage.src = PATH_BOT_INVADER;
+//mothership image
+var mothershipImage= new Image();
+mothershipImage.src = PATH_MOTHERSHIP;
+
 //explosion image
 var explosion = new Image();
 explosion.src = PATH_EXPLOSION;
+
 //missle explosion
 var misexplosion = new Image();
 misexplosion.src = PATH_MISEXPLOSION;
@@ -185,12 +194,20 @@ var bot1Row = new Array();
 var bot1x = 0;
 var bot1y = 0;
 var numberOfInvadersBot1=10;
+var bot1Count=0;
 
-//first bottom row
+//last bottom row
 var bot0Row = new Array();
 var bot0x = 0;
 var bot0y = 0;
 var numberOfInvadersBot0=10;
+var bot0Count=0;
+
+//mothership
+var mothership = new motherShip(MOTHER_X, MOTHER_Y, 5, true, false);
+var mothershipCount=0;
+var motherx = 0;
+var mothery = 0;
 
 function bubbleInit(){
     for(var i=1; i<=bubbleLives;i++){
@@ -272,10 +289,47 @@ function row0init(){
 //testing for contact
 function contactExplosion(){
     //sizes of invader bounds for contact
+    //bot0 hit detection
+    for(var i=0; i<numberOfInvaders;i++){
+        var invaderx=bot0Row[i].x;
+        var invadery=bot0Row[i].y;
+        var topInvaderxhigh=invaderx+BOTINV_WIDTH-8;
+        var topInvaderyhigh=invadery+BOTINV_HEIGHT-10;
+        if(invaderx<missle.x&&invadery<missle.y&&
+          topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
+          bot0Row[i].alive==true){
+            score += 5;
+            if(score>highScore){
+                highScore+=5;
+            }
+            speed+=.01;
+            bot0Row[i].explode=true;
+            return true;
+        }
+    }
+    //bot1 hit detection
+    for(var i=0; i<numberOfInvaders;i++){
+        var invaderx=bot1Row[i].x;
+        var invadery=bot1Row[i].y;
+        var topInvaderxhigh=invaderx+BOTINV_WIDTH-8;
+        var topInvaderyhigh=invadery+BOTINV_HEIGHT-10;
+        if(invaderx<missle.x&&invadery<missle.y&&
+          topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
+          bot1Row[i].alive==true){
+            score += 10;
+            if(score>highScore){
+                highScore+=10;
+            }
+            speed+=.02;
+            bot1Row[i].explode=true;
+            return true;
+        }
+    }
+    //middle row detection
     for(var i=0; i<numberOfInvaders;i++){
         var invaderx=midRow[i].x;
         var invadery=midRow[i].y;
-        var topInvaderxhigh=invaderx+MIDINV_WIDTH-14;
+        var topInvaderxhigh=invaderx+MIDINV_WIDTH-8;
         var topInvaderyhigh=invadery+MIDINV_HEIGHT-10;
         if(invaderx<missle.x&&invadery<missle.y&&
           topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
@@ -284,16 +338,16 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=20;
             }
-            speed+=.01;
+            speed+=.02;
             midRow[i].explode=true;
             return true;
         }
     }
-
+//top row detection
     for(var i=0; i<numberOfInvaders;i++){
         var invaderx=topRow[i].x;
         var invadery=topRow[i].y;
-        var topInvaderxhigh=invaderx+TOPINV_WIDTH-14;
+        var topInvaderxhigh=invaderx+TOPINV_WIDTH-18;
         var topInvaderyhigh=invadery+TOPINV_HEIGHT-10;
         if(invaderx<missle.x&&invadery<missle.y&&
           topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
@@ -302,11 +356,35 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=30;
             }
-            speed+=.01;
+            speed+=.02;
             topRow[i].explode=true;
             return true;
         }
     }
+//mothership hit detection
+
+    var invaderx=mothership.x;
+    var invadery=mothership.y;
+    var topInvaderxhigh=invaderx+MOTHER_WIDTH;
+    var topInvaderyhigh=invadery+MOTHER_HEIGHT-10;
+    if(invaderx<missle.x&&invadery<missle.y&&
+       topInvaderxhigh>missle.x&&topInvaderyhigh>missle.y&&
+       mothership.alive==true){
+        if(mothership.HP==1){
+            score += 250;
+            if(score>highScore){
+                highScore+=250;
+            }
+            speed+=.05;
+            mothership.explode=true;
+            mothership.HP-=1;
+            return true;
+        }else{
+            mothership.HP-=1;
+            return true;
+        }
+    }
+
 
 }
 
@@ -329,6 +407,14 @@ function invadersDraw(){
             }
 
         }
+
+    //this is the counter to shutter flash the animation of the invader sprites
+    animateCounter++;
+    //catching overflow
+    if(animateCounter>10000){
+        animateCounter=0;
+    }
+
     //moving the invaders left and right down the screen, increasing in speed as invaders are killed XD
     if(left==true&&down==false){
         for(var i=0; i<numberOfInvaders;i++){
@@ -336,6 +422,7 @@ function invadersDraw(){
             midRow[i].x-=speed;
             bot1Row[i].x-=speed;
             bot0Row[i].x-=speed;
+            mothership.x-=speed/2;
             if(topRow[0].x<10){
                 down=true;
             }
@@ -346,6 +433,7 @@ function invadersDraw(){
             midRow[i].x+=speed;
             bot1Row[i].x+=speed;
             bot0Row[i].x+=speed;
+            mothership.x+=speed/2;
             if(topRow[9].x>SCREEN_WIDTH-40){
                 down=true;
                 }
@@ -366,13 +454,16 @@ function invadersDraw(){
             bot1Row[j].y+=5;
             bot0Row[j].y+=5;
             //making sure you lose if the invaders reach the cannon
-            if(bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT){
+            if(bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot0Row[j].alive==true&&
+              bot1Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot1Row[j].alive==true&&
+              midRow[j].y>=CANNON_Y-CANNON_HEIGHT&&midRow[j].alive==true&&
+              topRow[j].y>=CANNON_Y-CANNON_HEIGHT&&topRow[j].alive==true){
                 lifes=0;
             }
         }
     }
 
-    animateCounter++;
+    //top row drawing
     for(var i=0; i<numberOfInvaders;i++){
         if(topRow[i].explode==true){
             ctx.drawImage(explosion, topRow[i].x+2, topRow[i].y);
@@ -388,9 +479,9 @@ function invadersDraw(){
             }
         }
 
-    //middle
+    //middle row drawing
         if(midRow[i].explode==true){
-            ctx.drawImage(explosion, midRow[i].x, midRow[i].y);
+            ctx.drawImage(explosion, midRow[i].x-1, midRow[i].y);
             midCount++;
             if(midCount==5){
             midCount=0;
@@ -402,19 +493,67 @@ function invadersDraw(){
                 ctx.drawImage(midInvaderImage, midx, midy, MIDINV_WIDTH, MIDINV_HEIGHT, midRow[i].x, midRow[i].y, 0.9*MIDINV_WIDTH, 0.9*MIDINV_HEIGHT);
             }
         }
-
-
-        ctx.drawImage(bottomInvaderImage, bot1x, bot1y, BOTINV_WIDTH, BOTINV_HEIGHT, bot1Row[i].x, bot1Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
-
-        ctx.drawImage(bottomInvaderImage, bot0x, bot0y, BOTINV_WIDTH, BOTINV_HEIGHT, bot0Row[i].x, bot0Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
-
-
+    //bot1 row drawing
+        if(bot1Row[i].explode==true){
+            ctx.drawImage(explosion, bot1Row[i].x+2, bot1Row[i].y);
+            bot1Count++;
+            if(bot1Count==5){
+            bot1Count=0;
+            bot1Row[i].explode=false;
+            bot1Row[i].alive=false;
+            }
+        }else{
+            if(bot1Row[i].alive==true){
+                ctx.drawImage(bottomInvaderImage, bot1x, bot1y, BOTINV_WIDTH, BOTINV_HEIGHT, bot1Row[i].x, bot1Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
+            }
+        }
+    //bot0 row drawing
+        if(bot0Row[i].explode==true){
+            ctx.drawImage(explosion, bot0Row[i].x+2, bot0Row[i].y);
+            bot0Count++;
+            if(bot0Count==5){
+            bot0Count=0;
+            bot0Row[i].explode=false;
+            bot0Row[i].alive=false;
+            }
+        }else{
+            if(bot0Row[i].alive==true){
+                ctx.drawImage(bottomInvaderImage, bot0x, bot0y, BOTINV_WIDTH, BOTINV_HEIGHT, bot0Row[i].x, bot0Row[i].y, 0.9*BOTINV_WIDTH, 0.9*BOTINV_HEIGHT);
+            }
+        }
     }
+    //mother ship drawing
+    if(mothership.explode==true){
+            ctx.drawImage(explosion, mothership.x+2, mothership.y);
+            mothershipCount++;
+            if(mothershipCount==5){
+            motherShipCount=0;
+            mothership.explode=false;
+            mothership.alive=false;
+            }
+        }else{
+             if(mothership.alive==true){
+            switch(mothership.HP){
+                case 5:
+                    ctx.drawImage(mothershipImage, motherx, mothery, MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 4:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 3:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(2*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 2:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(3*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+                case 1:
+                    ctx.drawImage(mothershipImage, motherx, mothery+(4*MOTHER_HEIGHT), MOTHER_WIDTH, MOTHER_HEIGHT, mothership.x, mothership.y, MOTHER_WIDTH, MOTHER_HEIGHT);
+                    break;
+            }
 
-    //catching overflow
-    if(animateCounter>10000){
-        animateCounter=0;
-    }
+            }
+        }
+
 }
 
 function draw(){
@@ -449,8 +588,24 @@ function draw(){
                               midRow=new Array();
                               bot0Row=new Array();
                               bot1Row=new Array();
+                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 5, true, false);
                              },5000);
 
+    }else if(gameWin()==true){
+        ctx.drawImage(gwin, 0, 0);
+        setTimeout(function(){playGame=false;
+                              gameOver=false;
+                              lifes=6;
+                              lifey=0;
+                              score=0;
+                              bubbleLives=5;
+                              fps=2;
+                              topRow=new Array();
+                              midRow=new Array();
+                              bot0Row=new Array();
+                              bot1Row=new Array();
+                              mothership = new motherShip(MOTHER_X, MOTHER_Y, 5, true, false);
+                             },5000);
     }else{
         fps=60;
         ctx.drawImage(gb, 0, 0);
@@ -597,6 +752,15 @@ function invader(x, y, alive, explode){
     this.explode=explode;
 }
 
+//function for mothership object
+function motherShip(x, y, HP, alive, explode){
+    this.x=x;
+    this.y=y;
+    this.HP=HP;
+    this.alive=alive;
+    this.explode=explode;
+}
+
 function scorePad(score){
     score = ""+ score;
     var pad ="0000"
@@ -615,6 +779,21 @@ function playGameButton(evt){
         gameScreen.addEventListener("click", gameStart);
         draw();
     }
+}
+
+function gameWin(){
+    var won=true;
+    for(var i=0; i<numberOfInvaders;i++){
+        if(topRow[i].alive!=false||
+           midRow[i].alive!=false||
+           bot1Row[i].alive!=false||
+           bot0Row[i].alive!=false||
+          mothership.alive!=false){
+            won=false;
+        }
+    }
+    return won;
+
 }
 
 function gameStart(evt){
