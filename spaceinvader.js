@@ -161,9 +161,14 @@ var counter=0;
 var animID;
 var fps=2;
 var angle = 0;
+//audion effects
 var music = new Audio();
 music.src = GAME_MUSIC;
 var musicInterval=0.005;
+var audinvbul = new Audio();
+audinvbul.src = AUD_MISSLE_INV;
+
+
 
 //for bubble shields
 //initializing the array of bubble shields
@@ -259,6 +264,7 @@ function missleLaunch(){
 
         if(missle.y>0){
             ctx.drawImage(missleimg, missle.x, missle.y);
+
             missle.y-=missleSpeed;
             var bool=contactExplosion();
             if(bool){
@@ -360,6 +366,9 @@ function contactExplosion(){
             }
             music.playbackRate+=musicInterval;
             speed+=.01;
+            var audexplosion = new Audio();
+            audexplosion.src = AUD_EXPLOSION;
+            audexplosion.play();
             bot0Row[i].explode=true;
             return true;
         }
@@ -379,6 +388,9 @@ function contactExplosion(){
             }
             music.playbackRate+=musicInterval;
             speed+=.02;
+            var audexplosion = new Audio();
+            audexplosion.src = AUD_EXPLOSION;
+            audexplosion.play();
             bot1Row[i].explode=true;
             return true;
         }
@@ -398,6 +410,9 @@ function contactExplosion(){
             }
             music.playbackRate+=musicInterval;
             speed+=.02;
+            var audexplosion = new Audio();
+            audexplosion.src = AUD_EXPLOSION;
+            audexplosion.play();
             midRow[i].explode=true;
             return true;
         }
@@ -417,6 +432,9 @@ function contactExplosion(){
             }
             music.playbackRate+=musicInterval;
             speed+=.02;
+            var audexplosion = new Audio();
+            audexplosion.src = AUD_EXPLOSION;
+            audexplosion.play();
             topRow[i].explode=true;
             return true;
         }
@@ -437,6 +455,9 @@ function contactExplosion(){
             }
             music.playbackRate+=musicInterval;
             speed+=.05;
+            var audexplosion = new Audio();
+            audexplosion.src = AUD_EXPLOSION;
+            audexplosion.play();
             mothership.explode=true;
             mothership.HP-=1;
             return true;
@@ -476,6 +497,9 @@ function motherMissHit(){
         }
 
         if(hit){
+            var audshield = new Audio();
+            audshield.src = AUD_SHIELD;
+            audshield.play();
             return true;
         }
 
@@ -515,6 +539,7 @@ function invadersDraw(){
             //launching invader missles
             mothershipMissle1Alive=true;
             mothershipMissle2Alive=true;
+            audinvbul.play();
             mothermiss1.x=mothership.x+11;
             mothermiss2.x=mothership.x+MOTHER_WIDTH-11;
             mothermiss1.y=mothership.y+MOTHER_HEIGHT;
@@ -827,6 +852,9 @@ function draw(){
             gameOver=true;
         }
         if(lostLife){
+            var audexplosion = new Audio();
+            audexplosion.src = AUD_EXPLOSION;
+            audexplosion.play();
             lifes--;
             lostLife=false;
         }
@@ -879,7 +907,11 @@ function draw(){
         }else if(leftDown==true&&CANNON_X>=GB_LEFT_BORDER){
             CANNON_X-=3;
         }else if(spaceDown==true){
+         ;
             if(missleAlive==false){
+                var audcanbul = new Audio();
+                audcanbul.src = AUD_MISSLE_CAN;
+                audcanbul.play()
                 missleAlive=true;
                 missle.x=CANNON_X+17;
                 missle.y=CANNON_Y-10;

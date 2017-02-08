@@ -132,3 +132,7 @@ var CONSTANT_SPEED = .1;
 
 //var for audio
 var GAME_MUSIC="spaceinvaders.wav";
+var AUD_EXPLOSION = "explosion.wav";
+var AUD_MISSLE_INV = "invaderbullet.wav";
+var AUD_MISSLE_CAN =  "cannonbullet.wav";
+var AUD_SHIELD = "shield.wav"
