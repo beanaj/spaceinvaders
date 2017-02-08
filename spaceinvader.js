@@ -161,6 +161,9 @@ var counter=0;
 var animID;
 var fps=2;
 var angle = 0;
+var music = new Audio();
+music.src = GAME_MUSIC;
+var musicInterval=0.005;
 
 //for bubble shields
 //initializing the array of bubble shields
@@ -355,6 +358,7 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=5;
             }
+            music.playbackRate+=musicInterval;
             speed+=.01;
             bot0Row[i].explode=true;
             return true;
@@ -373,6 +377,7 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=10;
             }
+            music.playbackRate+=musicInterval;
             speed+=.02;
             bot1Row[i].explode=true;
             return true;
@@ -391,6 +396,7 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=20;
             }
+            music.playbackRate+=musicInterval;
             speed+=.02;
             midRow[i].explode=true;
             return true;
@@ -409,6 +415,7 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=30;
             }
+            music.playbackRate+=musicInterval;
             speed+=.02;
             topRow[i].explode=true;
             return true;
@@ -428,6 +435,7 @@ function contactExplosion(){
             if(score>highScore){
                 highScore+=motherScore;
             }
+            music.playbackRate+=musicInterval;
             speed+=.05;
             mothership.explode=true;
             mothership.HP-=1;
@@ -573,6 +581,7 @@ function invadersDraw(){
             midRow[j].y+=5;
             bot1Row[j].y+=5;
             bot0Row[j].y+=5;
+
             //making sure you lose if the invaders reach the cannon
             if((bot0Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot0Row[j].alive==true)||
               (bot1Row[j].y>=CANNON_Y-CANNON_HEIGHT&&bot1Row[j].alive==true)||
@@ -693,6 +702,7 @@ function invadersDraw(){
 }
 
 function draw(){
+
     setTimeout(function(){
 
     animID=requestAnimationFrame(draw);
@@ -736,6 +746,7 @@ function draw(){
                               mothership.alive=true;
                               mothership.explode=false;
                               mothership.HP=10;
+                              music.playbackRate=1;
                              },5000);
 
     }else if(gameWin()==true){
@@ -763,8 +774,10 @@ function draw(){
                               motherScore+=50;
                               speed=speedSave;
                               speed+=.1;
+                              music.playbackRate=1;
                              },5000);
     }else{
+        music.play();
         fps=60;
         ctx.drawImage(gb, 0, 0);
         //adding all text, high schor, score, lives and credits

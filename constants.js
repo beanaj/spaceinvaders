@@ -129,3 +129,6 @@ var MOTHER_X=180,
     MOTHER_START_Y=0;
 //var for spee
 var CONSTANT_SPEED = .1;
+
+//var for audio
+var GAME_MUSIC="spaceinvaders.wav";
